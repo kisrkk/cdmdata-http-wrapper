@@ -59,7 +59,31 @@ claude mcp get cdmdata
 
 `-s user` makes the server available in all your projects. Use `-s project` to scope it to one repo instead.
 
-### 2. Install the Agent Skill (Claude Code)
+### 2. Register the MCP server (Codex)
+
+Add this server to your Codex config file:
+
+```toml
+# ~/.codex/config.toml
+[mcp_servers.cdmdata]
+command = "node"
+args = ["/absolute/path/to/cdmdata-http-wrapper/server.js"]
+
+[mcp_servers.cdmdata.env]
+CDMDATA_BASE_URL = "https://dbs5.cplservice.com"
+CDMDATA_ACCESS_KEY = "AK..."
+CDMDATA_SECRET_KEY = "SK..."
+```
+
+Add `CDMDATA_ADMIN_TOKEN` if you need API key management tools:
+
+```toml
+CDMDATA_ADMIN_TOKEN = "your-admin-bearer-token"
+```
+
+Use an absolute path for `server.js`, then restart Codex so it reloads MCP servers.
+
+### 3. Install the Agent Skill (Claude Code)
 
 The skill teaches Claude how to use the tools (parameters, response shape, pitfalls).
 
