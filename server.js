@@ -26,6 +26,15 @@ const tools = [
     inputSchema: dataReadSchema(),
   },
   {
+    name: "cdmdata_on_off_command",
+    description: "Send an on/off command to a CDM kit meter via /cdmdata/v1/on-off-command using AK/SK.",
+    inputSchema: objectSchema({
+      device_id: { type: "string", description: "Required CDM kit device_id." },
+      meter_id: { type: "string", description: "Required meter id, for example 01." },
+      command: { type: "string", enum: ["on", "off"], description: "Command to send." },
+    }, ["device_id", "meter_id", "command"]),
+  },
+  {
     name: "cdmdata_apikey_create",
     description: "Create a CDM Data API key. Requires CDMDATA_ADMIN_TOKEN.",
     inputSchema: objectSchema({
@@ -33,7 +42,7 @@ const tools = [
       allowed_devices: {
         type: "array",
         items: { type: "string" },
-        description: "Optional allowed device list. Empty or omitted means all devices.",
+        description: "Allowed device list. Empty or omitted denies all devices. Use [\"*\"] to allow all devices.",
       },
     }),
   },
@@ -61,7 +70,7 @@ const tools = [
       from: { type: "string", description: "Optional occurred_at lower bound." },
       to: { type: "string", description: "Optional occurred_at upper bound." },
       device_id: { type: "string" },
-      function_name: { type: "string", enum: ["getdata", "getdatahourly", "getdatadaily"] },
+      function_name: { type: "string", enum: ["getdata", "getdatahourly", "getdatadaily", "on-off-command"] },
       collection_name: { type: "string" },
       limit: { type: "integer", minimum: 1, maximum: 500 },
     }, ["id"]),
@@ -80,7 +89,11 @@ const tools = [
     inputSchema: objectSchema({
       id: { type: "string" },
       name: { type: "string" },
-      allowed_devices: { type: "array", items: { type: "string" } },
+      allowed_devices: {
+        type: "array",
+        items: { type: "string" },
+        description: "Empty array denies all devices. Use [\"*\"] to allow all devices.",
+      },
       is_active: { type: "boolean" },
     }, ["id"]),
   },
@@ -211,6 +224,8 @@ async function callTool(name, args) {
       return request("GET", "/cdmdata/v1/getdatahourly", { query: args, headers: dataHeaders() });
     case "cdmdata_getdatadaily":
       return request("GET", "/cdmdata/v1/getdatadaily", { query: args, headers: dataHeaders() });
+    case "cdmdata_on_off_command":
+      return request("POST", "/cdmdata/v1/on-off-command", { body: args, headers: dataHeaders() });
     case "cdmdata_apikey_create":
       return request("POST", "/cdmdata/v1/api-keys", { body: args, headers: adminHeaders() });
     case "cdmdata_apikey_list":

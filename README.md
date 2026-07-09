@@ -11,6 +11,7 @@ Zero npm dependencies — a single `server.js` using Node 20+ built-in `fetch`.
 | `cdmdata_getdata` | Raw CDM kit data | AK/SK |
 | `cdmdata_getdatahourly` | Hourly aggregated data | AK/SK |
 | `cdmdata_getdatadaily` | Daily aggregated data | AK/SK |
+| `cdmdata_on_off_command` | Send meter on/off command | AK/SK |
 | `cdmdata_apikey_create` / `list` / `get` / `usage` / `rename` / `update` / `revoke` / `delete` | API key management | Admin token |
 
 ## Requirements
@@ -127,6 +128,18 @@ Create a restricted API key (admin):
 { "name": "customer billing integration", "allowed_devices": ["0004236908"] }
 ```
 
+Create an all-device API key (admin):
+
+```json
+{ "name": "operations integration", "allowed_devices": ["*"] }
+```
+
+Send an on/off command:
+
+```json
+{ "device_id": "0004236908", "meter_id": "01", "command": "on" }
+```
+
 ## Smoke test
 
 ```bash
@@ -140,4 +153,6 @@ EOF
 - Never commit real keys. Keys live only in your MCP client config / env.
 - `secret_key` is returned once at key creation — it cannot be retrieved again.
 - Prefer `cdmdata_apikey_revoke` over `delete`; revoked keys fail with `403 Invalid API key`.
-- Restrict customer keys with `allowed_devices`.
+- `allowed_devices: []` or omitted denies all device access.
+- `allowed_devices: ["*"]` allows all devices.
+- Restrict customer keys with explicit `allowed_devices` lists.
