@@ -74,13 +74,6 @@ CDMDATA_BASE_URL = "https://dbs5.cplservice.com"
 CDMDATA_ACCESS_KEY = "AK..."
 CDMDATA_SECRET_KEY = "SK..."
 ```
-
-Add `CDMDATA_ADMIN_TOKEN` if you need API key management tools:
-
-```toml
-CDMDATA_ADMIN_TOKEN = "your-admin-bearer-token"
-```
-
 Use an absolute path for `server.js`, then restart Codex so it reloads MCP servers.
 
 ### 3. Install the Agent Skill (Claude Code)
@@ -177,6 +170,4 @@ EOF
 - Never commit real keys. Keys live only in your MCP client config / env.
 - `secret_key` is returned once at key creation — it cannot be retrieved again.
 - Prefer `cdmdata_apikey_revoke` over `delete`; revoked keys fail with `403 Invalid API key`.
-- `allowed_devices: []` or omitted denies all device access.
-- `allowed_devices: ["*"]` allows all devices.
 - Restrict customer keys with explicit `allowed_devices` lists.
